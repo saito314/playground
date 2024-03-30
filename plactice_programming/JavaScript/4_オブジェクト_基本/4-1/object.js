@@ -90,3 +90,82 @@ let user = {
 };
 */
 
+// プロパティ名の制限
+let obj = {
+    for: 1,
+    let: 2,
+    return: 3,
+};
+// プロパティ名を予約語にしてもエラーはでない。
+// 多分使うことはない
+alert(obj.for + obj.let + obj.return);
+
+obj[0] = "test";
+alert(obj[0]);
+alert(obj["0"]); // 文字列でも同じプロパティにアクセスできる
+
+// 特殊なプロパティ名
+let a = {};
+obj.__proto__ = 5; // 値を設定
+alert(obj.__proto__); // 設定した値は無視される
+
+// プロパティの存在チェック -> in演算子
+let b = {};
+alert(b.noSuchProperty === undefined) // true <- このようなプロパティはありません
+// "key" in object
+let c = {
+    name: "John",
+    age: 30,
+}
+
+alert("age" in c); // true
+alert("blabla" in c); // false
+
+// なぜundefinedとの比較ではなくてin演算子を使うのか
+// undefinedの値を持つプロパティがある場合に意図していない動作になるから
+let d = {test: undefined};
+
+alert(d.test === undefined); // true <- testプロパティは存在しないのか？
+alert("test" in d); // true <- 存在している
+
+// for...inループ
+// これを使用するとオブジェクトから値を取り出すことができる
+let e = {
+    name: "John",
+    age: 30,
+    isAdmin: true,
+}
+
+for (let key in e) {
+    // keys
+    alert(key);
+    // values for the keys
+    alert(d[key]);
+}
+
+// オブジェクトの順序付け
+// 整数値のプロパティはソートされてしまう
+let codes = {
+    "49": "Germany",
+    "41": "Switzerland",
+    "44": "Great Britain",
+    // ...
+    "1": "USA",
+};
+
+for (let code in codes) {
+    alert(code); // 1, 41, 44, 49
+}
+// このように勝手にソートされたくない場合には非整数プロパティに設定する
+let newCodes = {
+    "+49": "Germany",
+    "+41": "Switzerland",
+    "+44": "Great Britain",
+    // ...
+    "+1": "USA",
+}
+
+// これは想定通りに動いている
+for (let code in newCodes) {
+    alert(code) // 49, 41, 44, 1
+}
