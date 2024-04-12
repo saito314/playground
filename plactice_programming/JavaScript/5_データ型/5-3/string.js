@@ -60,3 +60,25 @@ alert(`The backslash: \\`);
 // 文字列長
 // lengthは文字列の長さをもつ
 alert(`My\n`.length); // 3
+
+let str = `Hello`;
+
+alert(str[0]);
+alert(str.charAt(0));
+
+alert(str[str.length - 1]);
+
+str = `Hello`;
+
+alert(str[1000]);
+alert(str.charAt(1000));
+
+for (let char of "Hello") {
+    alert(char);
+}
+
+// 文字列は不変
+str = "Hi";
+
+str[0] = 'h';
+alert(str[0]);
