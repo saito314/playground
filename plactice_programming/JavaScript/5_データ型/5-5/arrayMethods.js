@@ -130,3 +130,102 @@ users = [
 
 let someUsers = users.filter(item => item.id < 3);
 alert(someUsers.length); // 2
+
+// map
+// 配列の各要素に対して関数を呼び出し、結果の配列を返す
+let lengths = ["Blibo", "Gandalf", "Mazgul"].map(item => item.length)
+alert(lengths);
+
+// sort
+// ソートされた配列を返す
+arr = [1, 2, 15];
+
+arr.sort();
+alert(arr); // 1, 15 ,2
+// 通常文字列としてソートされる
+
+function compareNumeric(a, b) {
+    if (a > b) return 1;
+    if (a == b) return 0;
+    if (a < b) return -1;
+};
+
+arr = [1, 2, 15];
+
+arr.sort(compareNumeric);
+
+alert(arr);
+
+// どの要素が比較されているか知りたいときはalertしても問題ない
+[1, -2, 15, 2, 0, 8].sort(function(a, b) {
+    alert(a + " <> " + b);
+    return a - b;
+});
+
+// reverse
+arr = [1, 2, 3, 4, 5];
+arr.reverse();
+
+alert(arr); // 5,4,3,2,1
+
+// splitとjoin
+// str.splitは区切り文字で文字列を配列に分割する
+let names = "Blibo, Gandalf, Mazgul";
+
+arr = names.split(", ");
+
+for (let name of arr) {
+    alert(`A message to ${name}.`);
+};
+
+// 長さも指定できる
+arr = "Blibo, Gandalf, Nazgul, Saruman".split(", ", 2);
+
+alert(arr);
+
+// joinはsplitと逆の動作をする
+arr = ["Blibo", "Gandalf", "Nazgul"];
+
+let str = arr.join(";");
+alert(str);
+
+// reduce/reduceRight
+arr = [1, 2, 3, 4, 5];
+
+let result = arr.reduce((sum, current) => sum + current, 0);
+
+alert(result);
+
+// initial値を省略することもできる
+result = arr.reduce((sum, current) => sum + current);
+// 配列が空の場合はinitial値を省略するとエラー
+// reduceRightは逆順から行う
+
+// 配列に対してtypeofはうまく働かない
+alert(typeof {}); // object
+alert(typeof []); // object
+// array.isArrayを使用する
+alert(Array.isArray({})); // false
+alert(Array.isArray([])); // true
+
+let army = {
+    minAge: 18,
+    maxAge: 27,
+    canJoin(user) {
+        return user.age >= this.minAge && user.age < this.maxAge;
+    }
+};
+  
+users = [
+    {age: 16},
+    {age: 20},
+    {age: 23},
+    {age: 30}
+];
+  
+// army.canJoin が true となるユーザを見つける
+let soldiers = users.filter(army.canJoin, army);
+  
+alert(soldiers.length); // 2
+alert(soldiers[0].age); // 20
+alert(soldiers[1].age); // 23
