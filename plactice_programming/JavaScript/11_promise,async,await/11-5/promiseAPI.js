@@ -54,7 +54,7 @@
 {
     Promise.all([
         new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
-        new Promise((resolve, reject) => setTimeout(() => reject(new Error("Whoops!")))),
+        new Promise((resolve, reject) => setTimeout(() => reject(new Error("Whoops!")), 2000)),
         new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000))
     ]).catch(alert) // Error, Whoops!
 }
@@ -70,4 +70,102 @@
         3 // Promise.resolve(3)
         // と上記は処理される
     ]).then(alert); // 1, 2, 3
+}
+
+
+// Promise.allSettled
+// Promise.allはいずれかのpromiseがrejectされると、全体としてrejectされる
+// Promise.allSettledは結果に関わらずすべてのpromiseが解決するまで待つ
+// 結果の配列は以下をもつ
+// 成功：{ status: "fulfilled", value: result }
+// エラー：{ status: "rejected", reason: error }
+{
+    let urls = [
+        'https://api.github.com/users/iliakan',
+        'https://api.github.com/users/remy',
+        'https://no-such-url'
+    ];
+
+    Promise.allSettled(urls.map(url => fetch(url)))
+        .then(results => {
+            results.forEach((result, num) => {
+                if (result.status == "fulfilled") {
+                    alert(`${urls[num]}: ${result.value.status}`);
+                }
+                if (result.status == "rejected") {
+                    alert(`${urls[num]}: ${result.reason}`);
+                }
+            });
+        });
+}
+
+// Polyfill
+{
+    if (!Promise.allSettled) {
+        const rejectHandler = reason => ({ status: "rejected", reason });
+        const resolveHandler = value => ({ status: "fulfilled", value });
+
+        Promise.allSettled = function(promise) {
+            const convertedPromises = promises.map(p => Promise.resolve(p).then(resolveHandler, rejectHandler));
+            return Promise.all(convertedPromises);
+        };
+    }
+}
+// これで指定されたすべてのpromiseの結果を得るPromise.allSettledが利用できる
+
+
+// Promise.race
+// Promise.allと同じだが、最初の結果を待つ
+{
+    // 例えばここでは結果は1になる
+    Promise.race([
+        new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)), // 最初に成功するのはここ
+        new Promise((resolve, reject) => setTimeout(() => reject(new Error("Whoops!")), 2000)),
+        new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000))
+    ]).then(alert); // 1
+}
+
+// Promise.any
+// Promise.raceと同様だが、指定されたpromiseがすべてrejectされた場合
+// 返却されるpromiseはAggregateErrorでrejectされる
+{
+    // 例えばここでは結果は1になる
+    Promise.any([
+        new Promise((resolve, reject) => setTimeout(() => reject(new Error("Whoops!")), 1000)),
+        new Promise((resolve, reject) => setTimeout(() => resolve(1), 2000)),
+        new Promise((resolve, reject) => setTimeout(() => resolve(2), 3000))
+    ]).then(alert); // 1
+}
+{
+    // すべてのpromiseが失敗した例
+    Promise.any([
+        new Promise((resolve, reject) => setTimeout(() => reject(new Error("Ouch!")), 1000)),
+        new Promise((resolve, reject) => setTimeout(() => reject(new Error("Error!")), 2000))
+    ]).catch(error => {
+        console.log(error.constructor.name); // AggregateError
+        console.log(error.errors[0]); // Error: Ouch!
+        console.log(error.errors[1]); // Error: Whoops!
+    });
+}
+
+// Promise.resolve/reject
+// 最近ではPromise.resolveとPromise.rejectは使用されない
+{
+    let cache = new Map();
+
+    function loadCached(url) {
+        if (cache.has(url)) {
+            return Promise.resolve(cache.get(url));
+        }
+
+        return fetch(url)
+            .then(response => response.text())
+            .then(text => {
+                cache.set(url, text);
+                return text;
+            });
+    }
+
+    let promise = new Promise((resolve, reject) => reject(error));
+    // これは実際ほとんど使われない
 }
