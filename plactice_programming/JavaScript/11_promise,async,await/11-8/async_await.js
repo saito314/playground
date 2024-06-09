@@ -9,3 +9,12 @@
 
     f().then(alert);
 }
+
+// 明示的にpromiseを返すこともできる
+{
+    async function f)() {
+        return Promise.resolve(1);
+    }
+
+    f().then(alert);
+}
