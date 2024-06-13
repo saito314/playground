@@ -130,3 +130,148 @@
 
     alert(sequence); // 1, 2, 3, 4, 5
 }
+
+// Symbol.iteratorからジェネレータへの変換
+// ジェネレータをSymbol.iteratorとして提供することで、両方の世界からベストを得ることができる
+{
+    let range = {
+        from: 1,
+        to: 5,
+
+        *[Symbol.itarator]() { // [Symbol.iterator]: function*()の短縮記法
+            for (let value = this.from; value <= this.to; value++) {
+                yield value;
+            }
+        }
+    };
+
+    alert([...range]); // 1, 2, 3, 4, 5
+}
+
+// ジェネレータの合成
+// ジェネレータ同士を透過的に埋め込むことを可能にするジェネレータの特別な機能
+// 選択した文字でパスワードを作成することを考える
+{
+    function* generateSequence(start, end) {
+        for (let i = start; i <= end; i++) yield i;
+    }
+
+    function* generatePasswordCodes() {
+        // 0..9
+        yield* generateSequence(48, 57);
+        // A..Z
+        yield* generateSequence(65, 90);
+        // a..z
+        yield* generateSequence(97, 122);
+    }
+
+    let str = "";
+
+    for (let code of generatePasswordCodes()) {
+        str += String.fromCharCode(code);
+    }
+
+    alert(str); // 0..9A..Za..z
+}
+
+// 上記は入れ子のジェネレータのコードがインライン展開された場合と同じ
+{
+    function* generateSequence(start, end) {
+        for (let i = start; i <= end; i++) yield i;
+    }
+
+    function* generateAlphaNum() {
+        // yield* generateSequence(48, 57);
+        for (let i = 48; i <= 57; i++) yield i;
+        // yield* generateSequence(65, 90);
+        for (let i = 65; i <= 90; i++) yield i;
+        // yield* generateSequence(97, 122);
+        for (let i = 97; i <= 122; i++) yield i;
+    }
+
+    let str = "";
+
+    for (let code of genereteAlphaNum()) {
+        str += String.fromCharCode(code);
+    }
+
+    alert(str); // 0..9A..Za..z
+}
+
+// yieldは双方向
+// ジェネレータは結果を外部に返すだけでなく、ジェネレータ内部に値を渡すことができる
+{
+    function* gen() {
+        // 質問を外側のコードに渡して答えを待つ
+        let result = yield "2 + 2?";
+
+        alert(result);
+    }
+
+    let generator = gen();
+
+    let question = generator.next().value; // <-- yield は値を返す
+
+    generator.next(4); // --> 結果をジェネレータに返す
+
+    // ある時間経過後にジェネレータを再開する
+    setTimeout(() => generator.next(4), 1000);
+}
+
+// 関数と呼び出しコードがお互いに値を渡しあうことはめったにない
+// 明白にするコードは下記の例
+{
+    function* gen() {
+        let ask1 = yield "2 + 2?";
+
+        alert(ask1); // 4
+
+        let ask2 = yield "3 * 3?";
+
+        alert(ask2); // 9
+    }
+
+    let generator = gen();
+
+    alert(generator.next().value); // "2 + 2?"
+    alert(generator.next(4).value); // "3 * 3?"
+    alert(generator.next(9).done); // true
+}
+
+// generator.throw
+// 外部のコードはyieldの結果として値をジェネレータに渡す可能性がある
+// エラーをyieldに渡すにはgenerator.throw(err)を呼び出す必要がある
+{
+    function* gen() {
+        try {
+            let result = yield "2 + 2?";
+
+            alert("The execution does not reach here, because the exception is thrown above");
+        } catch(e) {
+            alert(e); // エラーを表示する
+        }
+    }
+
+    let generator = gen();
+
+    let question = generator.next().value;
+
+    generator.throw(new Error("The answer is not found in my database"));
+}
+
+// try..catchでキャッチしない場合は他の例外のようにジェネレータは呼び出しコードで落ちる
+{
+    function* generate() {
+        let result = yield "2 + 2?";
+    }
+
+    let generator = generate();
+
+    let question = generator.next().value;
+
+    try {
+        generator.throw(new Error("The answer is not found in my database"));
+    } catch(e) {
+        alert(e); // エラーを表示する
+    }
+}
