@@ -61,3 +61,46 @@ import {sayHi} from "./module_sayHi.js";
 
     <button id="button">Button</button>
 */
+
+// Asyncはインラインスクリプトで動作する
+/*
+    <!-- すべての依存対象が取得(analytics.js)され、スクリプトが実行されます -->
+    <!-- ドキュメントや他の <script> タグは待ちません -->
+    <script async type="module">
+    import {counter} from './analytics.js';
+
+    counter.count();
+    </script>
+*/
+
+// 外部スクリプト
+// 同じsrcの外部スクリプトは一度だけ実行される
+// 別のドメインから取得された外部スクリプトはCORSヘッダを必要とする
+/*
+<!-- スクリプト my.js は一度だけ取得され実行されます -->
+<script type="module" src="my.js"></script>
+<script type="module" src="my.js"></script>
+
+<!-- another-site.com は Access-Control-Allow-Origin を提供しなければなりません -->
+<!-- そうでない場合、スクリプトは実行されません -->
+<script type="module" src="http://another-site.com/their.js"></script>
+*/
+
+
+// むき出しのモジュールは許可されていない
+// パスのないモジュールをベアモジュールといい、importは許可されていない
+
+
+// 互換性"nomodule"
+// 古いブラウザはtype=moduleを理解していない
+// その場合はnomodule属性を使ってフォールバックを提供することができる
+/*
+    <script type="module">
+    alert("Runs in modern browsers");
+    </script>
+
+    <script nomodule>
+    alert("現在のブラウザは type=module と nomodule どちらも知っているので、これはスキップされます")
+    alert("古いブラウザは未知の type=module を持つスクリプトは無視しますが、これは実行します");
+    </script>
+*/
