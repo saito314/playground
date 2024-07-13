@@ -183,3 +183,107 @@
         alert(a.href); // 完全なURLの形式 http://site.com/page#hello
     </script>
 */
+
+
+// 非標準の属性、dataset
+// HTMLの記述では多くの標準属性を使う。
+// しかし、非標準やカスタムのものはどうか
+// HTMLからJavaScriptへカスタムデータを渡す
+// もしくはJavaScriptのためにHTML要素をマークする目的として非標準の属性が使われることがある
+/*
+    <!-- "name"を表示するdivをマークする-->
+    <div show-into="name"></div>
+    <!-- ここはageです -->
+    <div show-info="age"></div>
+
+    <script>
+        // コードはマークのある要素を探し、要求されたものを表示する
+        let user = {
+            name: "Pete",
+            age: 25
+        };
+
+        for (let div of document.querySelectorAll("[show-info]")) {
+            // フィールドに対応する情報を挿入する
+            let field = div.getAttribute("show-info");
+            div.innerHTML = user[field]; // Pete, then age
+        }
+    </script>
+*/
+
+// 要素のスタイルにも使われる
+// 例えば、ここでは注文状態に対して属性order-stateが使われる
+/*
+    <style>
+        // スタイルはカスタム属性"order-state"に依存する
+        .order[order-state="new"] {
+            color: green;
+        }
+
+        .order[order-state="pending"] {
+            color: blue;
+        }
+
+        .order[order-state="canceled"] {
+            color: red;
+        }
+    </style>
+
+    <div class="order" order-state="new">
+        A new order.
+    </div>
+
+    <div class="order" order-state="pending">
+        A pending order.
+    </div>
+
+    <div class="order" order-state="canceled">
+        A canceled order.
+    </div>
+*/
+
+// 状態は次のように簡単に変更できる
+{
+    // 古いクラスの削除/新しいクラスの追加よりも少しシンプル
+    div.setAttribute("order-state", "canceled");
+}
+
+// "data-"で始まるすべての属性はプログラマのために予約されている
+// これらはdatasetプロパティで使用可能
+/*
+    例：
+    <body data-about="Elephants">
+    <script>
+        alert(document.body.dateset.about); // Elephants
+    </script>
+*/
+
+// data-order-stateのような複数後はキャメルケースになる：dataset.orderState
+// ここでは"order state"の例を書き直している
+/*
+    <style>
+        .order[data-order-state="new"] {
+            color: green;
+        }
+
+        .order[data-order-state="pending"] {
+            color: blue;
+        }
+
+        .order[data-order-state="canceled"] {
+            color: red;
+        }
+    </style>
+
+    <div id="order" class="order" data-order-state="new">
+        A new order.
+    </div>
+
+    <script>
+        // read
+        alert(order.dataset.orderState); // new
+
+        // modify
+        order.dataset.orderState = "pending";
+    </script>
+*/
