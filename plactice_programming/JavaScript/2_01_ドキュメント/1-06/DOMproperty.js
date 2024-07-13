@@ -145,3 +145,41 @@
         alert(input.getAttribute("value")); // text (更新されていない)
     </script>
 */
+
+
+// DOMプロパティは型付けされている
+// DOMプロパティは文字列とは限らない。たとえばinput.checkedプロパティは真偽値
+/*
+    <input id="input" type="checkbox" checked> checkbox
+
+    <script>
+        alert(.getAttribute("checked")); // 属性値：空文字
+        alert(input.checked); // プロパティ値：true
+    </script>
+*/
+
+// 他の例：style属性は文字列だが、styleプロパティはオブジェクト
+/*
+    <div id="div" style="color:red;font-size:120%">Hello</div>
+
+    <script>
+        // string
+        alert(div.getAttribute("style")); // color:red;font-size:120%
+
+        // object
+        alert(div.style); // [object CSSStyleDeclaration]
+        alert(div.style.color); // red
+    </script>
+*/
+
+// href DOMプロパティは属性が相対URLや単なる#hashだとしても、常に完全なURL
+/*
+    <a id="a" href="#hello">link</a>
+    <script>
+        // 属性
+        alert(a.getAttribute("href")); // #hello
+
+        // プロパティ
+        alert(a.href); // 完全なURLの形式 http://site.com/page#hello
+    </script>
+*/
