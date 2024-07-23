@@ -191,3 +191,142 @@
 
 
 // ノードのクローン: cloneNode
+// 似たようなメッセージを複数挿入したい場合がある
+/*
+    メッセージをコピーする例
+    <style>
+    .alert {
+        padding: 15px;
+        border: 1px solid #d6e9c6;
+        border-radius: 4px;
+        color: #3c763d;
+        background-color: #dff0d8;
+    }
+    </style>
+
+    <div class="alert" id="div">
+        <strong>Hi there!</strong> You've read an important message.
+    </div>
+
+    <script>
+        let div2 = div.cloneNode(true); // メッセージをクローン
+        div2.querySelector("strong").innerHTML = "Bye there!"; // クローンを変更
+
+        div.after(div2); // 既存のdivの後にdiv2を表示
+    </script>
+*/
+
+
+// DocumentFragment
+// DocumentFragmentはノードにリストを渡すためのラッパーとして機能する特別なDOMノード
+// DocumentFragmentへ他のノードに追加することができる
+/*
+    getListContentは<li>のアイテムのフラグメントを生成し、後で<ul>に挿入される
+    <ul id="ul"></ul>
+
+    <script>
+        function getListContent() {
+            let fragment = new DocumentFragment();
+
+            for (let i = 1; i <= 3; i++) {
+                let li = document.createElement("li");
+                li.append(i);
+                fragment.append(li);
+            }
+
+            return fragment;
+        }
+
+        ul.append(getListContent());
+    </script>
+*/
+
+/*
+    DocumentFragmentはめったに使用されず、代わりにノードの配列を返すことができる
+    <ul id="ul"></ul>
+
+    <script>
+        function getListContent() {
+            let result = [];
+
+            for (let i = 1; i <= 3; i++) {
+                let li = document.createElement("li");
+                li.append(i);
+                result.push(li);
+            }
+
+            return result;
+        }
+
+        ul.append(...getListContent()); // append + "..." oparator = friends!
+    </script>
+*/
+
+// 古典的な挿入/削除メソッド
+// 古典的なDOMメソッドもある
+
+// parentElem.appendChild(node)
+/*
+    <ol id="list">
+        <li>0</li>
+        <li>1</li>
+        <li>2</li>
+    </ol>
+
+    <script>
+        let newLi = document.createElement("li");
+        newLi.innerHTML = "Hello, world!";
+
+        list.appendChild(newLi);
+    </script>
+*/
+
+// parentElem.insertBefore(node, nextSibling)
+/*
+    <ol id="list">
+        <li>0</li>
+        <li>1</li>
+        <li>2</li>
+    </ol>
+
+    <script>
+        let newLi = document.createElement("li");
+        newLi.innerHTML = "Hello, world!";
+
+        list.insertBefore(newLi, list.Children[1]);
+    </script>
+*/
+
+// parentElem.replaceChild(node, oldChild)
+/*
+    <ol id="list">
+        <li>0</li>
+        <li>1</li>
+        <li>2</li>
+    </ol>
+
+    <script>
+        let li = list.firstElementChild;
+        list.removeChild(li);
+    </script>
+*/
+
+// "document.write"について
+// webページに何かを追加する非常に古い方法がある
+/*
+    <p>Somewhere in the page...</p>
+    <script>
+        document.write("<b>Hello from JS</b>");
+    </script>
+    <p>The end</p>
+*/
+
+// document.writeの呼び出しはページがロードされている間だけ動作する
+/*
+    <p>After one second the contents of this page will be replace...</p>
+    <script>
+        // 1秒後にdocument.writeをする
+        // それはページがロードされた後のため既存コンテンツを削除する
+        setTimeout(() => document.write("<b>...By this.</b>"), 1000);
+    </script>
+*/
