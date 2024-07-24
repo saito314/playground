@@ -1,8 +1,5 @@
 "use Strict";
 
-// 誤字あり：技術的にはそれぞれお loadScript に直接 .then を書くことも可能でです:
-// もういっこ：リモートサーバからユーザに関する情報をロードすのに fetch メソッドを使います。
-
 // promiseチェーン
 {
     new Promise(function(resolve, reject) {
