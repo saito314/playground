@@ -110,3 +110,67 @@
         return false;
     };
 }
+
+
+// ドロップ可能を検出する
+// 抽象的には私たちはドラッグ可能な要素をより、ドロップ可能な要素上にドロップする
+// ドロップ可能なターゲットを知る必要があり、ドロップ可能要素にonmouseover/mouseupハンドラを設定する
+// しかし、マウスがドラッグしている間はドラッグ可能な要素が常にドロップ可能要素の上にあるため動作しない
+/*
+    <style>
+        div {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: 0;
+        }
+    </style>
+
+    <div style="background:blue" onmouseover="alert('never works')">>/div>
+    <div style="background:red" onmouseover="alert('over red!')"</div>
+*/
+
+// ではどうすればよいか
+// document.elementFromPoint(clientX, clientY)というメソッドがある
+// 指定されたウィンドウ相対座標上の最もネストされた要素を返す
+{
+    // マウスイベントハンドラの中
+    ball.hidden = true;
+    let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+    ball.hidden = false;
+    // elemBelowはボールの下の要素で、もしそれがドロップ可能であれば処理する
+}
+
+
+// ドロップ可能な要素を探すように確証されたonMouseMoveのコード
+{
+    let currentDroppable = null; // 今飛んでいるドロップ可能要素
+
+    function onMouseMove(event) {
+        moveAt(event.pageX, event.pageY);
+
+        ball.hidden = true;
+        let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+        ball.hidden = false;
+
+        // mousemoveイベントはウィンドウ外をトリガする可能性がある
+        // clientX/clientYがウィンドウ外の場合、elementfromPointはnullを返す
+        if (!elemBelow) return;
+
+        // 潜在的なドロップ可能領域はdroppableクラスでラベル付されています
+        let droppableBelow = elemBelow.closest(".droppable");
+
+        if (currentDroppable != droppableBelow) { // 変更がある場合
+            // 両方の値がnullになりえる
+
+            if (currentDroppable) {
+                leaveDroppable(currentDroppable);
+            }
+            curremtDroppable = droppableBelow;
+            if (curremtDroppable) {
+                // ドロップ可能領域に入る処理のためのロジック
+                enterDroppable(curremtDroppable);
+            }
+        }
+    }
+}
