@@ -1,5 +1,7 @@
 "use strict";
 
+// 誤字？：キーボードによって開始され得ることはたくさんあるので、デフォルトアクションさまざまです。
+
 
 // キーボード： keydownとkeyup
 // 現在のデバイスでは何かを入力するためのほかの方法があることに留意
@@ -26,3 +28,34 @@
         }
     });
 }
+// キー配置が違うキーボードでもevent.codeは位置を特定する
+// したがって、指定した文字と違う文字でイベントが発生してしまうことがある
+
+
+// 自動繰り返し
+// もしキーが長時間押されていると繰り返しを始める
+// keydownが何度もトリガされ、それが離された後に最終的にkeyupがトリガされる
+
+
+// デフォルトアクション
+// キーボードによって開始されることはたくさんあるので、デフォルトアクションもさまざま
+// keydownのデフォルトアクションを防ぐことはOSベースの特別なキーを除き、それらのほとんどを取り消すことが可能
+/*
+    <script>
+        function checkPhoneKey(key) {
+            return (key >= "0" && key <= "9") || key == "+" || key == "(" || key == ")" || key == "-";
+        }
+    </script>
+    <input onkeydown="return checkPhoneKey(event.key)" placeholder="Phone, please" type="tel">
+*/
+// backspace, left, right, ctrl+Vのような特別なキーはインプットでは動作しないことに注意
+// これは厳密なフィルタの副作用なので下の例ではすこしルールを弱める
+/*
+    <script>
+        function checkPhoneKey(key) {
+            return (key >= "0" && key <= "9") || key == "+" || key == "(" || key == ")" || key == "-" ||
+                key == "ArrowLeft" || key == "ArrowRight" || key == "Delete" || key == "Backspace";
+        }
+    </script>
+    <input onkeydown="return checkPhoneKey(event.key)" placeholder="Phone, please" type="tel">
+*/
