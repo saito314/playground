@@ -28,3 +28,12 @@
 
     <img id="img" src="https://en.js.cx/clipart/train.gif?speed=1&cache=0">
 */
+
+// DOMContentLoadedとscripts
+// ブラウザが最初にHTMLをロードし、テキスト中の<script>にでクラスとDOMの構築を続けることができない
+// そのため、スクリプトが実行された後にのみDOMContentLoadedが発生する可能性がある
+// 外部スクリプトも一時停止する
+// asyncやdefer属性をもつ外部スクリプトは例外で処理が続く
+
+
+// DOMContentLoadedとstyles
