@@ -128,3 +128,63 @@
 
 
 // 動的なハイライト表示のデモ
+{
+    let observer = new MutationObserver(mutations => {
+
+        for(let mutation of mutations) {
+            // 新しいノードを検査し、ハイライトするものはあるか？
+
+            for(let node of mutation.mutation.addedNodes) {
+                // 要素のみを追跡し、ほかのノード（例：テキストノード）はスキップ
+                if (!(node instanceof HTMLElement)) continue;
+
+                // 挿入された要素がコードスニペットであるかをチェック
+                if (node.matches('pre[class*="language-"]')) {
+                    Prism.highlightElement(node);
+                }
+
+                // あるいは、サブツリーのどこかにコードスニペットがあるか？
+                for(let elem of node.querySelectorAll('pre[class*="language-"]')) {
+                    Prism.highlightElement(elem);
+                }
+            }
+        }
+    });
+
+    let demoElem = document.getElementById('highlightdemo');
+
+    observer.observe(demoElem, {childList: true, subtree: true});
+}
+
+{
+    let demoElem = document.getElementById('highlight-demo');
+
+    // コードスニペットを持つコンテンツを動的に挿入する
+    demoElem.innerHTML = `A code snippet is below:
+        <pre class="language-javascript"><code> let hello = "world!"; </code></pre>
+        <div>Another one:</div>
+        <div>
+            <pre class="language-css"><code>.class { margin: 5px; } </code></pre>
+        </div>
+    `;
+}
+
+// これで、監視された要素またはdocument全体のすべてのハイライト表示を追跡できる
+
+
+// 追加のメソッド
+// ノードの監視を停止するためのメソッド
+// ・observer.disconnect() - 監視をやめる
+// 監視を停止するとき、オブザーバによりまだ処理されていない変更がある可能性がある。その場合は以下を使用する。
+// ・observer.takeRecords() - 未処置のmutationのレコード一覧を取得する
+{
+    // 未処理のmutationの一覧を取得する
+    // 処理されない可能性のある最近の変更を考慮する場合
+    // disconnectの前に呼ぶ必要がある
+    let mutationRecords = observer.takeRecords();
+
+    // 変更の追跡をストップする
+    observer.disconnect();
+
+    // ...
+}
