@@ -78,3 +78,113 @@
 
 
 // より大きなフラグメントの選択
+// 大きな選択を作成してみる
+// 開始と終了をテキストノードで相対オフセットとしてセットするだけ
+/*
+    <p id="p">Example: <i>italic</i> and <b>bold</b></p>
+
+    <script>
+        let range = new Range();
+
+        range.setStart(p.firstChild, 2);
+        range.setEnd(p.querySelector('b').firstChild, 3);
+
+        alert(range); // ample: italic and bol
+
+        // 選択にこの範囲を使用する
+        window.getSelection().addRange(range);
+    </script>
+*/
+
+
+// 範囲（range）プロパティ
+// 上の例で作成した範囲（range）オブジェクトは次のプロパティをもつ
+// ・startConteiner, startOffset: 開始店のノードとオフセット
+// ・endContainer, endOffset: 終了点のノードとオフセット
+// ・collapsed: 真偽値, rangeの開始/終了点が同じ場合はtrue
+// ・commonAncestorContainer: range内のすべてのノードの最も近い共通の祖先
+
+
+// 範囲（range）選択メソッド
+// 判を操作するための便利なメソッドがたくさんある
+// 範囲の開始を設定:
+// ・setStart: node内のoffsetの位置に開始点を設定する
+// ・setStartBefore: nodeの直前を開始点に設定する
+// ・setStartAfter: nodeの直後を開始点に設定する
+// 範囲の終了を設定:
+// ・setEnd: node内のoffsetの位置に終了点を設定する
+// ・setEndBefore: nodeの直前を終了点に設定する
+// ・setEndAfter: nodeの直後を終了点に設定する
+
+// 技術的にはsetStart/setEndはなんでもできるが、より多くのメソッドでさらに便利になる
+// これらのメソッドはすべて、nodeはテキストあるいは要素ノード両方になれる
+// テキストノードの場合offsetは文字をスキップする一方で、要素ノードは子ノードをスキップする
+
+// 範囲（range）を作成するためのメソッドがほかにもある
+// ・selectNode(node): node全体を選択するような範囲を設定する
+// ・selectNodeContents(node): nodeのコンテンツ全体を選択するような範囲を設定する
+// ・collapse(toStart): toStart=trueの場合end=start、そうでなければstart=endを設定する
+// ・cloneRange(): 同じ開始/終了点をもつ新しい範囲を作成する
+
+
+// 範囲（range）編集メソッド
+// 一度範囲(range)を作成し、次のようなメソッドを使用することでコンテンツを操作することができる
+// ・deleteContents(): ドキュメントから範囲のコンテンツを削除する
+// ・extractContents(): ドキュメントから範囲のコンテンツを削除し、DocumentFragmentとして返却する
+// ・cloneContents(): 範囲のコンテンツをクローンし、DocumentFragmentとして返却する
+// ・inserNode(node): ドキュメントの範囲の先頭にnodeを挿入する
+// ・surroundContents(node): nodeで範囲コンテンツをラップする
+
+/* ボタンクリックで選択範囲に対しメソッドを実行し、"resetExample"でリセットする
+
+    <p id="p">Example: <i>italic</i> and <b>bold</b></p>
+
+    <p id="result"></p>
+    <script>
+        let range = new Range();
+
+        // Each demonstrated method is represented here:
+        let methods = {
+            deleteContents() {
+                range.deleteContents()
+            },
+            extractContents() {
+                let content = range.cloneContents();
+                result.innerHTML = "";
+                result.append("extracted: ", content);
+            },
+            cloneContents() {
+                let content = range.cloneContents();
+                result.innerHTML = "";
+                resule.append("cloned: ", content)
+            },
+            inserNode() {
+                let newNode = document.createElement('u');
+                newNode.innerHTML = "NEW NODE";
+                range.insertNode(newNode);
+            },
+            surroundContents() {
+                let newNode = document.createElement('u');
+                try {
+                    range,surrounedContents(newNode);
+                } catch(e) { alert(e) }
+            },
+            resetExample() {
+                p.innerHTML = `Example: <i>italic</i> and <b>bold</b>`;
+                result.innerHTML = "";
+
+                range.setStart(p.firstChild, 2);
+                range.setEnd(p.querySelector('b').firstChild, 3);
+
+                window.setSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+        };
+
+        for (let method in methods) {
+            document.write(`<div><button onclick="methods.${method}()">${method}</button></div>`);
+        }
+
+        methods.resetExample();
+    </script>
+*/
