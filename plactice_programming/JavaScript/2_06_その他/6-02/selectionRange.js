@@ -188,3 +188,98 @@
         methods.resetExample();
     </script>
 */
+
+
+// 選択（Selection）
+// Rangeは選択範囲を管理するための汎用オブジェクト
+// ドキュメントの選択はSelectionオブジェクトで表現され、window.getSelection()あるいはdocument.getSelection()で取得できる
+
+
+// Selectionプロパティ
+// 理論上、選択には複数の範囲が含まれる場合がある。
+// これらの範囲オブジェクトは次のメソッドを使用して取得できる
+// getRangeAt(i): 0から始まるi番目の範囲を取得する
+
+// 範囲（range）と同様に選択に始点と終点があり、それぞれanchor、focusとよばれる
+// 主なSelectionプロパティは次のもの:
+// ・anchorNode: selectionの始点のあるnode
+// ・anchorOffset: selectionの始点のanchorNodeでのオフセット
+// ・focusNode: selectionの終点のあるnode
+// ・focusOffset: selectionの終点のfocusNodeでのオフセット
+// ・isCollapsed: selectionが未選択あるいは存在しない場合trueになる
+// ・rangeCount: selectionにふくまれるrangeの数
+
+
+// Selectionイベント
+// 選択範囲を追跡するためのイベントがある
+// ・elem.onselectstart: elemで選択が開始されたとき。例えばユーザがボタンを押しながらマウスを動かし始めたとき
+// ・document.onselectionchange: 選択範囲が変更されたとき
+
+
+// 選択範囲の追跡デモ
+// これは選択境界の変更に応じて動的に選択境界を表示する小さなデモ
+/*
+    <p id="p">Select me: <i>italic</i> and <b>bold</b></p>
+
+    From <input id="from" disabled> - To <input id="to" disabled>
+    <script>
+        document.onselectionchange = function() {
+            let selection = document.getSelection();
+
+            let {anchorNode, anchorOffset, focusNode, focusOffset} = selection;
+
+            // anchorNodeとfocusNodeは通常テキストノード
+            from.value = `${anchorNode?.data}, offset ${anchorOffset}`;
+            to.value = `${focusNode?.data}, offset ${focusOffset}`;
+        };
+    </script>
+*/
+
+
+// 選択(selection)のコピーデモ
+// 選択されたコンテンツをコピーする2つのアプローチがある
+// 1. document.getSelection().toString()を使用してテキストとして取得できる
+// 2. DOMノードとして: 基底となる範囲を取得し、それらのcloneContents()を呼び出す
+/*
+    <p id="p">Select me: <i>italic</i> and <b>bold</b></p>
+
+    Cloned: <span id="cloned"></span>
+    <br>
+    As text: <span id="astext"></span>
+
+    <script>
+        document.onselectionchange = function() {
+            let sekection = document.getSelection();
+
+            cloned.innerHTML = astext.innerHTML = "";
+
+            // rangeからDOMノードをクローンする
+            for (let i = 0; i < selection.rangeCount; i++) {
+                cloned.append(selection.getRangeAt(i).cloneContents());
+            }
+
+            // テキストとして取得
+            astext.innerHTML += selection;
+        };
+    </script>
+*/
+
+
+// selectionメソッド
+// rangeの追加/削除をするためのselectionメソッド:
+// ・getRangeAt(i): 0から始まるi番目のrangeを取得
+// ・addRange(range): 選択範囲にrangeを追加する
+// ・removeRange(range): selectionからrangeを削除する
+// ・removeAllRanges(): すべてのrangeを削除する
+// ・empty(): removeAllaRangesのエイリアス
+
+// またRangeなしで選択範囲を直接操作するための便利なメソッドがある:
+// ・collapse(node, offset): 選択されたrangeを指定されたnodeの位置offsetで開始および終了するrangeに置き換える
+// ・setPosition(node, offset): collapseのエイリアス
+// ・collapseToStart(): 選択範囲の始点に折りたたむ
+// ・collapseToEnd(): 選択範囲の終点に折りたたむ
+// ・extend(node, offset): 選択範囲のfocusを指定されたnodeの位置offsetに移動する
+// ・setPaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset): 選択範囲のrangeを指定された始点と終点に置き換える
+// ・selectAddChildren(node): nodeのすべての子を選択
+// ・deleteFromDocument(): ドキュメントから選択されたコンテンツを削除する
+// ・containsNode(node, allowPartialContainment = false): 選択範囲がnodeを吹くかチェックする
