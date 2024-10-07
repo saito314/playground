@@ -283,3 +283,100 @@
 // ・selectAddChildren(node): nodeのすべての子を選択
 // ・deleteFromDocument(): ドキュメントから選択されたコンテンツを削除する
 // ・containsNode(node, allowPartialContainment = false): 選択範囲がnodeを吹くかチェックする
+
+
+/*  段落<p>のコンテンツ全体を選択するには次のようにする
+    <p id="p">Select me: <i>italic</i> and <b>bold</b></p>
+
+    <script>
+        // <p>の0番目の子から最後の子までを選択
+        document.getSelection().setBaseAndExtent(p, 0, p, p.childNodes.length);
+    </script>
+*/
+
+/*
+    <p id="p">Select me: <i>italic</i> and <b>bold</b></p>
+
+    <script>
+        let range = new Range();
+        range.selectNodeContents(p); // or selectNodes(p)で<p>タグも選択する
+
+        document.getSelection().removeAllRanges(); // 存在する選択範囲をクリアする
+        document.getSelection().addRange(range);
+    </script>
+*/
+
+
+// フォームコントロール
+// inputやtextareaといったフォーム要素はSelectionやRangeオブジェクトなしで、選択のための特別なAPIを提供する
+/*
+    <textarea id="area" style="width:80%;height:60px">
+    Selecting in this text updates values below.
+    </textarea>
+    <br>
+    From <input id="from" disabled> - To <input id="to" disabled>
+
+    <script>
+        area.onselect = function() {
+            from.value = area.selectionStart;
+            to.value = area.selectionEnd;
+        };
+    </script>
+*/
+
+
+// 例: カーソルの移動
+// 選択範囲を設定するselectionStartとselectionEndを変更することができる
+/*
+    <textarea id="area" style="width:80%;height:60px">
+    Focus on me, the cursor will be at position 10.
+    </textarea>
+
+    <script>
+        area.onfocus = () => {
+            // ブラウザの"focus"アクションが終了した後に実行させるためのゼロ遅延のsetTimeout
+            setTimeout(() => {
+                // 任意の選択を設定できる
+                // 開始 = 終了の場合、カーソルはまさにその場所
+                area.selectionStart = area.selectionEnd = 10;        
+            });
+        };
+    </script>
+*/
+
+
+// 例: 選択の変更
+// 選択内容を変更するには、input.setRangeText()メソッドが利用できる。
+// selectionStart/Endを読み取り、選択に関する知識があればvalueの対応する部分文字列を変更することはできるが、setRangeTextはより強力で、多くの場合より便利
+/*
+    <input id="input" style="width:200px" value="Select here and click the button">
+    <button id="button">Wrap selection in stars *...*</button>
+
+    <script>
+        button.onclick = () => {
+            if (input.selectionStart == input.selectionEnd) {
+                return; // なにも選択されていない
+            }
+            
+            let selected = input.value.slice(input.selectionStart, input.selectionEnd);
+            input.setRangeText(`*${selected}*`);
+        };
+    </script>
+*/
+
+
+// 引数を増やすことで、範囲のstartとendを設定することができる
+/*  入力テキストから"THIS"を見つけ、それを置き換え、置換された選択範囲を維持する
+    <input id="input" style="width:200px" value="Replace THIS in text">
+    <button id="button">Replace THIS</button>
+
+    <script>
+        button.onclick = () => {
+            let pos = input.value.indexOf("THIS");
+            if (pos >= 0) {
+                input.setRangeText("*THIS*", pos, pos + 4, "select");
+                input.focus(); // 選択を見えるようにするためのfocus
+            }
+        };
+    </script>
+*/
