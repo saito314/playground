@@ -380,3 +380,40 @@
         };
     </script>
 */
+
+// 例: カーソル位置に挿入
+/*
+    <input id="input" style="width:200px" value="Text Text Text Text Text">
+    <button id="button">Insert "HELLO" at cursor</button>
+
+    <script>
+        button.onclick = () => {
+            input.setRangeText("HELLO", input.selectionStart, input.selectionEnd, "end");
+            input.focus();
+        };
+    </script>
+*/
+
+
+// 選択不可にする
+// 1. CSSプロパティ user-select: noneを使用する
+/*
+    <style>
+    #elem {
+        user-select: none;
+    }
+    </style>
+    <div>Selectable <div id="elem">Unselectable</div> Selectable</div>
+*/
+
+// 2. onselectstart または mousedownイベントで、デフォルト動作を防止する
+/*
+    <div>Selectable <div id="elem">Unselectable</div> Selectable</div>
+
+    <script>
+        elem.onselectstart = () => false;
+    </script>
+*/
+
+// 3. document.getSelection().empty()が発生した後、事後の選択をクリアすることもできる。
+//    これは選択が表示されて消えるときに不要な点滅を引き起こすため、めったに使われない。
