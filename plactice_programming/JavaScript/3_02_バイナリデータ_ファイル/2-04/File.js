@@ -21,3 +21,10 @@
     }
     </script>
 */
+
+// FileReader
+// FileReaderはBlobオブジェクトからデータを読み込むことのみを目的としたオブジェクト
+// コンストラクタ
+{
+    let reader = new FileReader(); // 引数はない
+}
