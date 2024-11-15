@@ -28,3 +28,27 @@
 {
     let reader = new FileReader(); // 引数はない
 }
+
+
+// ファイル読み込みの例
+/*
+    <input type="file" onchange="readFile(this)">
+
+    <script>
+        function readFile(input) {
+            let file = input.files[0];
+
+            let reader = new FileReader();
+
+            reader.readAsText(file);
+
+            reader.onload = function() {
+                console.log(reader.result);
+            };
+
+            reader.onerror = function() {
+                console.log(reader.error);
+            };
+        }
+    </script>
+*/
