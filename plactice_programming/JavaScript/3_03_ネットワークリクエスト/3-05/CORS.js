@@ -27,6 +27,31 @@
 {
     // データを処理する関数を宣言する
     function gotWeather({ temparature, humidity }) {
-        alert()
+        alert(`temperature: ${temperature}, humidity: ${humidity}`);
     }
+
+    // スクリプトに対してcallbackパラメータとしてその名前を渡す
+    let script = document.createElement('script');
+    script.src = `https://cors.javascript.info/article/fetch-crossorigin/demo/script?callback=gotWeather`;
+    document.body.append(script);
+}
+
+// 単純リクエスト
+// 本質的な違いは"単純リクエスト"は、特別な方法を使うことなくformまたはscriptを使って作成することができる
+
+
+// 単純リクエストに対するCORS
+// リクエストがクロスオリジンである場合う、ブラウザは常にOriginヘッダを追加する
+
+
+// 単純ではないリクエスト
+// クロスドメインのPATCHリクエストの例でステップ毎にどのように動作するのか見ていく
+{
+    let response = await fetch('https://site.com/service.json', {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "API-key": "secret"
+        }
+    });
 }
