@@ -55,3 +55,10 @@
         }
     });
 }
+
+// Credentals
+{
+    fetch('http://another.com', {
+        credentials: "include"
+    });
+}
