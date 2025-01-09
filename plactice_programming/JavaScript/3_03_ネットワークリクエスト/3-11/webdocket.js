@@ -38,3 +38,59 @@
         alert(`[error] ${error.message}`);
     };
 }
+
+// websocketのオープン
+// サーバがWebSocketに切り替えることに同意するとコード101の応答を返す必要がある
+// ここでSec-WebSocket-Acceptは特別なアルゴリズムを使用して産出されたSec-WebSocket-Key
+// ブラウザはこれを使って、リクエストに対応するレスポンスであることを確認する
+
+
+// 拡張とサブプロトコル
+// 拡張やサブプロトコルを記述する追加のヘッダSec-WebSocket-ExtensionsとSec-WebSocket-Protocolがある
+
+
+// データ転送
+// WebSocket通信はフレームで構成される
+// ブラウザではテキストフレームまたはバイナリフレームのみを直接扱う
+// WebSocket.send()メソッドはテキストまたはバイナリデータを送信できる
+// socket.send(body)呼び出しは文字列またはBlobやArrayBufferなどを含むバイナリ形式のBodyが許可される
+// 設定の必要はなく、任意のフォーマットで送信するだけでOK
+// これはsocket.bufferTypeプロパティで設定される
+// デフォルトはblobなので、バイナリデータはBlobオブジェクトで来る
+{
+    socket.bufferType = "arraybuffer";
+    socket.onmessage = (event) => {
+        // event.dataは文字列かarraybuffer
+    }
+}
+
+
+// レートリミット
+// 私たちのアプリが送信すべき大量のデータを生成しているとする
+// ユーザは低速のネットワーク接続で、おそらく郊外のモバイルインターネットだとする
+// 何度もsocket.send(data)を呼び出すことはできるが、データはメモリにバッファされ、ネットワーク速度が許可する範囲でできるだけ早く送信される
+{
+    setInterval(() => {
+        if (socket.bufferAmount == 0) {
+            socket.send(modeDat());
+        }
+    }, 100);
+}
+
+
+// 接続を閉じる
+// 通常接続を閉じたいときは、数値コードとテキストによる理由と合わせてconnection close frameを送信する
+{
+    socket.close([code], [reason]);
+}
+
+// 次にcloseイベントハンドラの相手はそのコードと理由を取得する
+{
+    socket.close(1000, "work complete");
+
+    // 相手
+    socket.onclose = event => {
+
+    };
+}
+
