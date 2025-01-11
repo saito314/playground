@@ -94,3 +94,75 @@
     };
 }
 
+// webSocketのコードはHTTPのコードにある程度て似ていますが別物です。
+// 特に1000より小さい数字は予約されており、そのようなコードを設定しようとするとエラーになる
+{
+    socket.onclose = event => {
+
+    };
+}
+
+// チャットのサンプル
+// ブラウザのWebSocketAPIとNode.jsのWebSocketモジュールを使用してチャットのサンプルを見てみましょう。
+// 主にクライアントサイドに注目しますが、サーバも簡単です。
+// HTMLメッセージを送信するためのformと受信メッセージ用のdivが必要
+/*
+    <form name="publish">
+        <input type="text" name="message">
+        <input type="submit" value="Send">
+    </form>
+
+    <div id="message"></div>
+*/
+
+// JavaScriptは次のことをする
+// 1. 接続をオープンします
+// 2. フォームの送信
+// 3. メッセージの受信
+{
+    let socket = new WebSocket("wss://javascript.info/article/websocket/chat/ws");
+
+    document.forms.publish.onsubmit = function() {
+        let outgoingMessage = this.message.value;
+
+        socket.send(outgoingMessage);
+        return false;
+    };
+
+    socket.onmessage = function(event) {
+        let message = event.data;
+
+        let messageElem = document.createElement("div");
+        messageElem.textContent = message;
+        document.getElementById("message").prepend(messageElem);
+    }
+}
+
+// サーバサイドのコードは少し今回のスコープを超えている
+// ここではNode.jsを使っているがそうでなくてもOK
+{
+    const ws = new require("ws");
+    const wss = new ws.Server({noServer: true});
+
+    const clients = new Set();
+
+    http.createServer((req, res) => {
+        wss.handle.createUpgrade(req, req.socket, Buffer.alloc(0), onSocketConnent);
+    });
+
+    function onSocketConnect(ws) {
+        clients.add(ws);
+
+        ws.on("message", function(message) {
+            message = message.slice(0, 50);
+
+            for(let client of clients) {
+                client.send(message);
+            }
+        });
+
+        ws.on("close", function() {
+            clients.delete(ws);
+        });
+    }
+}
