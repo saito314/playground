@@ -43,3 +43,69 @@
 {
     document.cookie = "user=John; path=/; expires=Tue, 19 Jan 2038 03:14:07 GMT"
 }
+
+
+// path
+// path = /mypath
+// Cookieへアクセス可能なURLパスプレフィックス。
+// 絶対値でなければならない
+// デフォルトでは現在のpathになる
+// 通常はすべてのWebサイトのページからCookieへアクセスできるようpath=/を設定する
+
+
+// domain
+// domain = site.com
+// Cookieへアクセス可能なドメイン
+// デフォルトではCookieはそれを設定したドメインでのみアクセス可能
+{
+    document.cookie = "user=John";
+
+    alert(document.cookie);
+}
+// 別の第2レベルのドメインからCookieにアクセスさせる方法はない。
+// そのため、other.comがsite.comで設定されたCookieを受け取ることはない。
+// しかし、サブドメインへのアクセスを許可したい場合、それは可能
+{
+    document.cookie = "user=John; domain=site.com";
+
+    alert(document.cookie);
+}
+
+
+// expire, max-age
+// デフォルトではCookieがこれらのどのオプションも持っていない場合、ブラウザが閉じられたときに消える
+// このようなCookieをセッションクッキーと呼ぶ
+// ブラウザを閉じれもCookieを生存させるにはexpiresあるいはmax-ageオプションを設定する
+// Cookieの有効期限を1日に設定する場合は下記のようになる
+{
+    let date = new Data(Data.now() + 86400e3);
+    date = date.toUTCString();
+    document.cookie = "user=John; expires=" + date;
+}
+// expiresを過去に設定するとCookieは削除される
+// また、expiresの代替としてCookieの有効期限を秒で指定する
+{
+    document.cookie = "user=John; max-age=3600";
+
+    document.cookie = "user=John; max-age=0";
+}
+
+
+// secure
+// デフォルトではCookieをhttp://site.comにセットした場合、それはhttps://site.comにも現れる
+// 逆もまた然り
+// つまり、Cookieはドメインのみをチェックしており、プロトコルを区別しない
+// secureフラグを置くこともできる
+{
+    document.cookie = "user=John; secure";
+}
+
+
+// samesite
+// クロスサイトリクエストフォージェリ攻撃から保護するためのセキュリティオプション
+// Cookie samesiteオプションを入力する
+// samesite=strict, 値なしのsamesiteと同じ
+// ユーザがサイトの外から来た場合、samesite=strictを持つCookieは決して送信されない
+// samesite=lax
+// Laxモードもstrictと同様にサイトの外から来た時にブラウザがCookieを送信するのを禁止するが例外がある
+// 保護を提供するためにsamesiteだけに頼った場合、古いブラウザは完全に脆弱になる
