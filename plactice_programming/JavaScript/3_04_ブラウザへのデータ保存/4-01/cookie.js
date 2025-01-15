@@ -109,3 +109,54 @@
 // samesite=lax
 // Laxモードもstrictと同様にサイトの外から来た時にブラウザがCookieを送信するのを禁止するが例外がある
 // 保護を提供するためにsamesiteだけに頼った場合、古いブラウザは完全に脆弱になる
+
+
+// 付録: Cookie関数
+// Cookieを扱うための関数の小さなセットで、手動でdocument.cookieを変更するよりも便利
+// getCookie
+{
+    function getCookie(name) {
+        let matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+}
+
+// setCookie
+{
+    function setCookie(name, value, options = {}) {
+
+        options = {
+            path: "/",
+            // 必要であれば他のデフォルトを追加する
+        };
+
+        if (options.expires.toUTCString) {
+            options.expires = options.expires.toUTCString();
+        }
+
+        let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+        for (let optionKey in options) {
+            updatedCookie += "; " + optionKey;
+            let optionValue = options[optionKey];
+            if (optionValue !== true) {
+                updatedCookie += "=" + optionValue;
+            }
+        }
+
+        document.cookie = updatedCookie;
+    }
+
+    setCookie("user", "John", {secure: true, "max-age": 3600});
+}
+
+// deleteCookie
+{
+    function deleteCookie(name) {
+        setCookie(name, "", {
+            "max-age": -1
+        });
+    }
+}
