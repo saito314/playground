@@ -118,3 +118,82 @@
         console.log("Error", request.error);
     };
 }
+
+
+// トランザクションの自動コミット
+// すべてのトランザクションの要求が終了し、microtasks queueが空になると、自動的にコミットされる
+{
+    let request1 = books.add(book);
+
+    request1.onasuccess = function() {
+        fetch("/").then(response => {
+            let request2 = books.add(anotherBook);
+            request2.onerror = function() {
+                console.log(request2.error.name);
+            };
+        });
+    };
+}
+
+// 正常に完了した瞬間を検知するにはtransaction.oncompleteイベントをリッスンする
+{
+    let transaction = db.transaction("books", "readwrite");
+
+    transaction.oncomplete = function() {
+        console.log("Transaction is compolete");
+    };
+}
+
+// トランザクションを手動で停止するには以下を呼び出す
+{
+    transaction.abort();
+}
+
+
+// エラーハンドリング
+// 書き込みリクエストは失敗に終わる可能性がある
+// リクエストに失敗すると、トランザクションは自動的に中止され、すべての変更がキャンセルされる
+{
+    let transaction = db.transaction("books", "readwrite");
+
+    let book = {id: "js", price: 10};
+
+    let request = transaction.objectStore("books").add(book);
+
+    request.onerror = function(event) {
+        if (request.error.name == "ConstrainError") {
+            console.log("Book with such id already exists");
+            event.preventDefault();
+        } else {
+
+        }
+    };
+
+    transaction.onabort = function() {
+        console.log("Error", transaction.error);
+    };
+}
+
+
+// イベント移譲
+// IndexedDBのイベントバブル: request -> transaction -> database
+{
+    db.onerror = function(event) {
+        let request = event.target;
+
+        console.log("Error", request.error);
+    };
+}
+
+// request.onerrorでevent.stopPropagation()を利用することでバブリングを停止することができる
+{
+    request.onerror = function(event) {
+        if (request.error.name == "ConstraintError") {
+            console.log("Book with such id already exists");
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+
+        }
+    };
+}
