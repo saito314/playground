@@ -197,3 +197,58 @@
         }
     };
 }
+
+
+// キーで検索する
+// オブジェクトストアの検索には主には2つの種類がある
+// 1. キー or キー範囲によるもの
+// 2. 別のオブジェクトフィールドによるもの
+{
+    books.get("js");
+
+    books.getAll(IDBKeyRange.bound('css', 'html'));
+
+    books.getAll(IDBKeyRange.upperBound('html', true));
+
+    books.getAll();
+
+    books.getAllkeys(IDBKeyRange.lowerBound('js', true));
+}
+
+
+// index付きの任意フィールドで検索する
+{
+    objectStore.createIndex(name, keyPath, [options]);
+}
+
+
+// indexを作成する必要がある。オブジェクトストア同様、upgradeneededで行わなければならない
+{
+    openRequest.onupgradeneeded = function() {
+        let books = db.createObjectStore("books", {keyPath: "id"});
+        let index = books.createIndex("price_idx", "price");
+    }
+}
+
+// 今、特定の価格で検索したい場合、単にindexに対して同じ検索メソッドを適用するだけ
+{
+    let transaction = db.transaction("books");
+    let books = transaction.objectStore("books");
+    let priceIndex = books.index("price_idx");
+
+    let request = priceIndex.getAll(10);
+
+    request.onsuccess = function() {
+        if (request.result !== undefined) {
+            console.log("Books", request.result);
+        } else {
+            console.log("No such books");
+        }
+    };
+}
+
+
+// IDBKeyRangeで範囲を作成し、安い/高い本を探すことができる
+{
+    let request = priceIndex.getAll(IDBKeyRange.upperBound(5));
+}
