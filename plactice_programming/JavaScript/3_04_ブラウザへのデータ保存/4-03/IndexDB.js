@@ -1,5 +1,8 @@
 "use strict";
 
+// 誤字：内部的には、ラッパーは onerror/onsuccess が追加されたネイテイブの IndexedDB リクエストを実行し、その結果を reject/resolve する promise を返します。
+
+
 
 // IndexedDB
 // IndexedDBは組み込みのデータベースで、localStorageよりも遥かに強力
@@ -251,4 +254,145 @@
 // IDBKeyRangeで範囲を作成し、安い/高い本を探すことができる
 {
     let request = priceIndex.getAll(IDBKeyRange.upperBound(5));
+}
+
+
+// ストアから削除する
+// deleteメソッドはクエリによって削除する値を調べる
+{
+    // 例
+    books.delete("js");
+}
+// 価格 あるいは別のオブジェクトフィールドをもとに本を削除したい場合は、最初にindexでキーを見つけ、その後deleteを呼び出す
+{
+    // price = 5のキーを見つける
+    let request = priceIndex.getKey(5);
+
+    request.onsuccess = function() {
+        let id = request.result;
+        let deleteRequest = books.delete(id);
+    };
+}
+
+// すべてを削除するには
+{
+    // ストレージをクリアする
+    books.clear();
+}
+
+
+// カーソル(Cursors)
+// getAll/getAllKeysのようなメソッドはキー/値の配列を返す
+// カーソルがオブジェクトストレージが巨大になりすぎて利用可能メモリからあふれてしまうことを回避する
+// カーソルは与えられたクエリでオブジェクトストレージを横断する特別なオブジェクトで、一度に1つのキー/値を返すためメモリを節約する
+{
+    let request = store.openCursor(MediaQueryList, [direction]);
+}
+
+// カーソルの主な違いはrequest.onsuccessが複数回トリガされること
+// 各結果に対して1度トリガされる
+{
+    let transaction = db.transaction("books");
+    let books = transaction.objectStore("books");
+
+    let request = books.openCursor();
+
+    // カーソルで見つかった各本に対して呼び出される
+    request.onsuccess = function() {
+        let cursor = request.result;
+        if (cursor) {
+            let key = cursor.key;
+            let value = cursor.value;
+            console.log(key, value);
+            cursor.continue();
+        } else {
+            console.log("No more books");
+        }
+    };
+}
+
+// カーソルに一致する値がもっとあるか否かはonsuccessを呼び出した後resultを見ることで、次のレコードを指すカーソルあるいはundefinedが取得できる
+// index上にカーソルを作成することもできる
+// index上のカーソルはオブジェクトストア上のカーソルとまったく同じように機能する
+{
+    let request = priceIdx.openCursor(IDBKeyRange.upperBound(5));
+
+    request.onsuccess = function() {
+        let cursor = request.result;
+        if (cursor) {
+            let primaryKey = cursor.primaryKey;
+            let value = cursor.value;
+            let key = cursor.key;
+            console.log(key, value);
+            cursor.continue();
+        } else {
+            console.log("No more books");
+        }
+    };
+}
+
+
+// promiseラッパー
+// すべてのリクエストにonsuccess/onerrorを追加するのはとても面倒な作業
+// イベント移譲を仕様することで、楽にできる場合があることがある。
+// primise化されたIndexedDBメソッドを持つ、グローバルなidbオブジェクトを生成する
+{
+    let db = await idb.openDB("store", 1, db => {
+        if (db.oldVersion == 0) {
+            // 初期化の実行
+            db.createObjectStore("books", {keyPath: "id"});
+        }
+    });
+
+    let transaction = db.transaction("books", "readwrite");
+    let books = transaction.objectStore("books");
+
+    try {
+        await books.add("");
+        await books.add("");
+
+        await transaction.complete;
+
+        console.log("jsbook saved");
+    } catch(err) {
+        console.log("error", err.message);
+    }
+}
+
+
+// エラーハンドリング
+// エラーをキャッチしない場合、最も近い外側のtry catchまでエラーがくる
+{
+    window.addEventListener("unhandledrejection", event => {
+        let request = event.target;
+        let error = event.reason;
+    });
+}
+
+
+// "非アクティブなトランザクション"の落とし穴
+// すでにご存じのように、ブラウザが現在のコードとマイクロタスクを実行するとすぐにトランザクションは自動コミットされる
+// promiseラッパーやasync.awaitの場合も同じ
+{
+    let transaction = db.transaction("inventory", "readwrite");
+    let inventory = transaction.objectStore("inventory");
+
+    await inventory.add({id: "js", price: 10, created: new Date()});
+
+    await fetch();
+
+    await inventory.add({id: "js", price: 10, created: new Date()}); // Error
+}
+// これを回避するためにはすべてのアイテムを準備してからコミットする
+
+
+// ネイティブオブジェクトを取得する
+// 内部的にはラッパーはonerror/onsuccessが追加されたネイティブのIndexedDBリクエストを実行し、その結果をreject/resolveするpromiseを返す
+{
+    let promise = books.add(book);
+
+    let request = promise.request;
+    let transaction = request.transaction;
+
+    let result = await promise; // 必要であれば
 }
