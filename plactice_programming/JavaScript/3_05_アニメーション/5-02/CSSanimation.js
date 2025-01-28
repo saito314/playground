@@ -106,3 +106,74 @@
         transition: left 5s cubic-bezier(0, 0, 1, 1);
     }
 */
+
+// スローダウンする電車に対してはease-outを使うことができる
+/*
+    .train {
+        left: 0;
+        transition: left 5s ease-out;
+    }
+*/
+
+// ベジェ曲線がアニメーションがその範囲から飛び出すようにすることができる
+// 曲線上の制御点は、負または巨大な値のy座標を持つことができる
+// ベジェ曲線も非常に低くまたは高くジャンプし、アニメーションが通常の範囲を超える
+/*
+    .train {
+        left: 100px;
+        transition: left 5s cubic-bezier(.5, -1, .5, 2);
+    }
+*/ 
+
+
+// transitionedイベント
+// CSSアニメーションが終了すると、transitionedイベントがトリガされる
+// アニメーション完了後になにかをするのに広く使われている
+// また、アニメーションを追加することもできる
+/*  ボートが動くアニメーション
+    boat.onclick = function() {
+        let times = 1;
+
+        function go() {
+            if (times % 2) {
+                // 右に進む
+                boat.classList.remove("back");
+                boat.style.marginLeft = 100 * times + 200 + "px";
+            } else {
+                boat.classList.add("back");
+                boat.style.marginLeft = 100 * times - 200 + "px"; 
+            }
+        }
+
+        go();
+
+        boat.addEventListenner("transitioned", function() {
+            times++;
+            go();
+        });
+    };
+*/  
+
+// キーフレーム(keyframes)
+// @keyframesというCSSのルールを使用して、複数の簡単なアニメーションを一緒に動作させることができる
+// この方法では、アニメーションの名前と何をいつどこでアニメーションさせるかのルールを指定している。
+// その後、animationプロパティを使ってアニメーションと要素の紐づけを行い、追加のパラメータを指定していく
+/*
+    <div class="progress"></div>
+
+    <style>
+        @keyframs fo-left-right {
+            from { left: 0px; }
+            to { left: clac(100% - 50px); }
+        }
+
+        .progress {
+            animation: go-left-right 3s infinite alternate;
+            position: relative;
+            border: 2px solid green;
+            width: 50px;
+            height: 20px;
+            background: lime;
+        }
+    </style>
+*/
