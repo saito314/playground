@@ -74,3 +74,51 @@
         time-zone-name="short"
     ></time-formatted>
 */
+
+
+// 属性を監視する
+// <time-formatted>の現在の実装では要素のレンダリング後、それ以上属性変更しても影響を与えない
+// observedAttributes()の性的なgetterに属性のリストを指定することで、属性を監視することができる
+/*
+    <script>
+        class TimeFormatted extends HTMLElement {
+
+            render() {
+                let date = new Date(this.getAttribute("datetime") || Date.now());
+
+                this.innerHTML = new Intl.DateTimeFormat("default", {
+                    year: this.getAttribute('year') || undefined,
+                    month: this.getAttribute('month') || undefined,
+                    day: this.getAttribute('day') || undefined,
+                    hour: this.getAttribute('hour') || undefined,
+                    minute: this.getAttribute('minute') || undefined,
+                    second: this.getAttribute('second') || undefined,
+                    timeZoneName: this.getAttribute('time-zone-name') || undefined,
+                }).format(date);
+            }
+
+            connectedCallback() {
+                if (!this.rendered) {
+                    this.render();
+                    this.rendered = true;
+                }
+            }
+
+            static get observedAttributes() {
+                return ['datetime', 'year', 'month', 'day', 'hour', 'minute', 'second', 'time-zone-name'];
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                this.render();
+            }
+        }
+
+        customElements.define("time-formatted", TimeFormatted);
+    </script>
+
+    <time-formatted id="elem" hour="numeric" minute="numeric" second="numeric"></time-formatted>
+
+    <script>
+        setInterval(() => elem.setAttribute('datetime', new Date()), 1000); // (5)
+    </script>
+*/
