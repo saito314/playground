@@ -122,3 +122,21 @@
         setInterval(() => elem.setAttribute('datetime', new Date()), 1000); // (5)
     </script>
 */
+
+
+// レンダリング順
+// HTMLパーサーがDOMを構築するとき、要素は次々に処理される
+// これはカスタム要素に対して重要な結果をもたらす
+// 例えば、カスタム要素がconnectedCallbackの中でinnerHTMLにアクセス仕様としても何も得られない
+/*
+    <script>
+        customElements.define("user-info", class extends HTMLElement{
+        
+            connectedCallback() {
+                alert(this.innerHTML);
+            }
+        });
+    </script>
+
+    <user-info>John</user-info>
+*/
