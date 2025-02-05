@@ -140,3 +140,68 @@
 
     <user-info>John</user-info>
 */
+
+// これは実行してもalertは空です
+// カスタム要素に情報を渡したい場合は、属性を使用することができる
+/*
+    <script>
+        customElements.define("user-info", class extends HTMLElement {
+        
+            connectedCallback() {
+                setTimeout(() => alert(this.innerHTML));
+            }
+        });
+    </script>
+
+    <user-info>John</user-info>
+*/
+
+// HTMLの構文解析が完了した後、非同期に実行することになるので、alertではJohnが表示される
+// ただし、外部の要素は内部の要素の初期化の前に初期化が終了するため、順番が変わる
+/*
+    <script>
+        customElements.define("user-info", class extends HTMLElement {
+            connectedCallback() {
+                alert(`${this.id} connected.`);
+                setTimeout(() => alert(`${this.id} initialized.`));
+            }
+        });
+
+        <user-info id="outer">
+            <user-info id="inner"></user-info>
+        </user-info>
+*/
+
+// カスタマイズされた組み込みの要素
+// <time-formatted>のような新しく作成した要素には関連するセマンティクスがない
+// 組み込みのクラスから継承することで、組み込みの要素を拡張したりカスタマイズすることができる
+// 1. HTMLButtonElementを拡張したクラスを作る
+{
+    class HelloButton extends HTMLButtonElement{ /* カスタム要素のメソッド */ }
+}
+// 2. タグを指定する3番目の引数をcustomElements.define
+{
+    customElements.define("hello-button", HelloButton, {extends: "button"});
+}
+// 3. 最後にカスタム要素を使うために、通常の<button>タグを挿入しますが、そこにis="hello-button"を追加する
+/*
+    <button is="hello-button">...</button>
+*/
+
+// 以下は完全な例
+/*
+    <script>
+        class HeeloButton extends HTMLButtonElement {
+            constructor() {
+                super();
+                this.addEventListener("click", () => alert("Hello"));
+            }
+        }
+
+        customElements.define("hello-button", HelloButton, {extends: "button"});
+    </script>
+
+    <button is="hello-button">Click me</button>
+
+    <button is="hello-button" disabled>Disabled</button>
+*/
