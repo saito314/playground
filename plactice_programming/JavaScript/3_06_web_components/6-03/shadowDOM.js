@@ -49,3 +49,29 @@
 {
     alert(elem.shadowRoot.host === elem);
 }
+
+
+// カプセル化
+// ShadowDOMはメインのドキュメントとは強く区切られている
+// ShadowDOM要素はlightDOMからのquerySelectorでは見えない。
+// 特に、ShadowDOM要素がlightDOMにあるidと衝突するidを持つ可能性があるが、問題ない
+// ShadowDOMは独自のスタイルシートをもつ。外部のDOMからのスタイルルールは適用されない
+/*
+    <style>
+        p { color: red; }
+    </style>
+
+    <div id="elem"></div>
+
+    <script>
+        elem.attachShadow({mode: "open"});
+        // shadow tree は独自のスタイルを持つ
+        elem.shadowRoot.innerHTML = `
+            <style> p { font-weight: bold; } </style>
+            <p>Hello, John!</p>
+        `;
+
+        alert(document.querySelectorAll("p").length);
+        alert(elem.shadowRoot.querySelectorAll("p").length);
+    </script>
+*/
