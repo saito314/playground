@@ -101,4 +101,130 @@
 
 
 // スロットコンテンツのスタイリング
-// 
+// スロットされた要素はlightDOM由来するので、これらの要素はドキュメントスタイルを使用する
+/*
+    <style>
+        span { font-weight: hold }
+    </style>
+
+    <user-card>
+        <div slot="username"><span>John Smith</span></div>
+    </user-card>
+
+    <script>
+    customElements.define("user-card", class extends HTMLElements {
+        connectedCallback() {
+            this.attachShadow({mode: "open"});
+            this.shadowRoot.innerHTML = `
+                <style>
+                span { background: red; }
+                </style>
+                Name: <slot name="username"></slot>
+            `;
+        }
+    });
+    </script>
+*/
+
+
+// コンポーネント内でスロットされた要素をスタイリングしたい場合、2通りの方法がある
+// 1つめは<slot>事態をスタイリングし、CSS軽傷を利用する
+/*
+    <user-card>
+        <div slot="username"><span>John Smith</span></div>
+    </user-card>
+
+    <script>
+    customElements.define("user-card", class extends HTMLElement {
+        connectedCallback() {
+            this.attachShadow({mode: "open"});
+            this.shadowRoot.innnerHTML = `
+                <style>
+                slot[name="username"] { font-weight: bold; }
+                </style>
+                Name: <slot name="username"></slot>
+            `;
+        }
+    });
+    </script>
+*/
+
+
+// もう1つの方法は::slotted(selector)疑似クラスを使用すること
+/*
+    <user-card>
+        <div slot="username">
+            <div>JohnSmith</div>
+        </div>
+    </user-card>
+
+    <script>
+    customElements.define("user-card", class extends HTMLElement {
+        connectedCallback() {
+            this.attachShadow({mode: "open"});
+            this.shadowRoot.innerHTML = `
+                <style>
+                ::slotted(div) { border: 1px solid red; }
+                </style>
+                Name: <slot name="username"></slot>
+            `;
+        }
+    });
+    </style>
+*/
+
+
+// カスタムプロパティとCSSフック
+// カスタムCSSプロパティはlightとシャドウの両方のうちのすべてのレベルで存在する
+/*
+    <style>
+        .field {
+            color: var(--user-card-field-color, black);
+        }
+    </style>
+    <div class="field">Name: <slot name="username"?</slot></div>
+    <div class="field">Birthday: <slot name="birthday"></slot></div>
+    </style>
+*/
+
+
+// さらに<user-card>のために外側のドキュメント内でこのプロパティを定義できる
+/*
+    user-card {
+        --user-card-field-color: green;
+    }
+*/
+
+
+// カスタムCSSプロパティがshadowDOMを通り、グローバルスコープになるので、インナー.fieldルールを使用できる
+/*
+    <style>
+        user-card {
+            --user-card-field-color: green;
+        }
+    </style>
+
+    <template id="tmpl"?
+        <style>
+            .field {
+                color: car(--user-card-field-color, black);
+            }
+        </style>
+        <div class="field">Name: <slot name="username"></slot></div>
+        <div class="field">Birthday: <slot name="birthday"></slot></div>
+    </template>
+
+    <script?
+    customElements.define("user-card", class extends HTMLElement {
+        connetedCallback() {
+            this.attachShadow({mode: "open"});
+            this.shadowRoot.append(document.getElementById("tmpl").content.cloneNode(true));
+        }
+    });
+    </script>
+
+    <user-card>
+        <span slot="username">John Smith</span>
+        <span slot="birthday">01.01.2001</spam>
+    </user-card>
+*/
