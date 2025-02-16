@@ -22,3 +22,5 @@
         e => alert("Outer target: " + e.target.tagName);
     </script>
 */
+
+// リターゲティングは物理的にlightDOM内に存在するスロット化された要素上でイベントが起こった場合には発生しない
