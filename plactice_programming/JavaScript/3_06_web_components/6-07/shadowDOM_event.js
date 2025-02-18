@@ -24,3 +24,24 @@
 */
 
 // リターゲティングは物理的にlightDOM内に存在するスロット化された要素上でイベントが起こった場合には発生しない
+/*
+    <user-card id="userCard">
+        <span slot="username">John Smith</span>
+    </user-card>
+
+    <script>
+        customElements.define("user-card", class extends HTMLElement {
+            connectedCallback() {
+                this.attachShadow({mode: "open"});
+                this.shadowRoot.innerHTML = `<div>
+                    <b>Name:</b> <slot name="username"></slot>
+                </div>`;
+
+                this.shadowRoot.firstElementChild.onclick = 
+                    e => alert("Inner target" + e.target.tagName);
+            }
+        });
+
+        userCard.onclick = e => alert(`Outer target: ${e.target.tagName}`);
+    </script>
+*/
