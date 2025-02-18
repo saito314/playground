@@ -45,3 +45,47 @@
         userCard.onclick = e => alert(`Outer target: ${e.target.tagName}`);
     </script>
 */
+
+
+// バブリング、event.composedPath()
+// イベントバブリングではフラット化されたDOMが使用される
+// スロット化された要素が存在し、その中のどこかでイベントが発生した場合、そのイベントは<slot>まで上方にバブリングする
+/*
+    <user-card id="userCard">
+        #shadow-root
+            <div>
+                <b>Name:</b>
+                <slot name="username">
+                    <span slot="username">John Smith</span>
+                </slot>
+            </div>
+    </user-card>
+*/
+
+
+// カスタムイベント
+// カスタムイベントをディスパッチすると、コンポーネントの外にバブルさせるためにbubblesとcomposedの両方のプロパティをtrueに設定する必要がある
+/*
+    <div id="outer"></div>
+
+    <script>
+    outer.attachShadow({mode: "open"});
+
+    let inner = document.createElement("div");
+    outer.shadowRoot.append(inner);
+
+    document.addEventListenner("test", event => alert(event.detail));
+
+    inner.dispatchEvent(new CustomEvent("test", {
+        bubbles: true,
+        composed: true,
+        detail: "composed"
+    }));
+
+    inner.dispatchEvent(new CustomEvent("test", {
+        bubbles: true,
+        composed: false,
+        detail: "not composed"
+    }));
+    </script>
+*/
