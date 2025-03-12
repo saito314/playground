@@ -16,3 +16,11 @@
     alert("Hello, Java!".match(/\bHell\b/));  // null
     alert("Hello, Java!".match(/\bJava!\b/)); // null
 }
+
+
+// 単語だけでなく数字に対しても同様に\bを利用できる
+// パターン\b\d\d\bは単独の2桁の数値を探す
+{
+    alert("1 23 456 78".match(/\b\d\d\b/g)); // 23,78
+    alert("12,34,56".match(/\b\d\d\b/g)); // 12,34,56
+}
