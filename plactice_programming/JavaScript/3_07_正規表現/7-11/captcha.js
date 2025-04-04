@@ -95,3 +95,10 @@
 
 
 // グループを含むすべて一致を検索する: matchAll
+{
+    let str = '<h1> <h2>';
+
+    let tags = str.match(/<(.*?)>/g);
+
+    alert(tags);
+}
