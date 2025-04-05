@@ -102,3 +102,16 @@
 
     alert(tags);
 }
+
+{
+    let results = '<hi> <h2>'.matchAll(/<(.*?)>/gi);
+
+    alert(results);
+
+    alert(results[0]);
+
+    results = Array.from(results);
+
+    alert(results[0]);
+    alert(results[1]);
+}
