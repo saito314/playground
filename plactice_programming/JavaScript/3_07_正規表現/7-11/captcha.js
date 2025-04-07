@@ -115,3 +115,80 @@
     alert(results[0]);
     alert(results[1]);
 }
+// 分割代入も使用できる
+{
+    let [tag1, tag2] = "<h1> <h2>".matchAll(/<(.*?)>/gi);
+}
+
+// matchAllで返却されるすべての一致は、フラグgなしのmatchにより返却されるものと同じ形式
+{
+    let results = "<h1> <h2>".matchAll(/<(.*?)>/gi);
+
+    let [tag1, tag2] = results;
+
+    alert(tag1[0]);
+    alert(tag1[1]);
+    alert(tag1.index);
+    alert(tag1.input);
+}
+
+
+// 名前つきグループ（Named groups）
+// 番号でグループを覚えておくのは難しい。
+// そのためのより良いオプションがある
+{
+    let dateRegexp = /(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})/;
+    let str = "2019-04-30";
+
+    let groups = str.match(dateRegexp).groups;
+
+    alert(groups.year);
+    alert(groups.month);
+    alert(groups.day);
+}
+
+// グループと一緒に完全な一致を得るにはmatchAllも必要
+{
+    let dateRegexp = /(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})/g;
+
+    let str = "2019-10-30 2020-01-01";
+
+    let results = str.matchAll(dateRegexp);
+
+    for(let result of results) {
+        let {year, month, day} = result.groups;
+
+        alert(`${day}.${month}.${year}`);
+    }
+}
+
+// 置換におけるキャプチャグループ
+{
+    let str = "John Bull";
+    let regexp = /(\w+) (\w+)/;
+
+    alert(str.replace(regexp, "$2, $1"));
+}
+
+{
+    let regexp = /(?<year>[0-9]{4})-(?<month>[0-9]{2})-(?<day>[0-9]{2})/g;
+
+    let str = "2019-10-30, 2020-01-01";
+
+    alert(str.replace(regexp, "$<day>.$<month>.$<year>"));
+}
+
+
+// ？を使用した非キャプチャグループ
+// 量指定子を正しく適用するためには括弧が必要
+{
+    let str = "Gogogo John!";
+
+    let resexp = /(?:go)+ (\w+)/i;
+
+    let result = str.match(regexp);
+
+    alert(result[0]);
+    alert(result[1]);
+    alert(result.length);
+}
