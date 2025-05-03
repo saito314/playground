@@ -42,3 +42,52 @@
     alert(result.index);
     alert(result.input);
 }
+
+
+// str.match(reg)"g"フラグ付き
+// "g"フラグがあると、str.matchはすべての配列を返す
+// その配列には追加のプロパティはなく、括弧は要素を作成しない。
+{
+    let str = "HO-Ho-ho!";
+
+    let result = str.match(/ho/ig);
+
+    alert(result);
+}
+
+// 括弧がある場合も変わりません。
+{
+    let str = "HO-Ho-ho!";
+
+    let result = str.match(/h(o)/ig);
+
+    alert(result);
+}
+
+// gフラグがあると、resultはシンプルなマッチの配列になる
+
+
+
+// str.split(regexp|substr, limit)
+// 正規表現または部分文字列を区切り文字として仕様して文字列を分割する
+{
+    alert("12-34-56".split("-"));
+}
+
+// しかし、正規表現を渡すことも可能
+{
+    alert("12-34-56".split(/-/));
+}
+
+
+// str.replace(str|reg, str|func)
+// 文字列の検索や置換のためのスイス・アーミーナイフ
+{
+    alert("12-34-56".replace("-", ":"));
+}
+
+// すべてのダッシュをみつけるためには文字列"-"ではなく、gフラグを持つ正規表現/-/gを使用する必要がある
+{
+    alert("12-34-56".replace(/-/g, ":"));
+}
+
