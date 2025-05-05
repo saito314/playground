@@ -1,6 +1,9 @@
 "use stirct";
 
 
+// 誤字あり: "賢い"な置換が必要な状況では、2つ目の引数は関数にすることができます
+
+
 // RegExpと文字列のメソッド
 // 正規表現を扱う2つの方法
 // 1. ます正規表現は組み込みのRegExpクラスのオブジェクトであり、多くのメソッドを提供する
@@ -91,3 +94,75 @@
     alert("12-34-56".replace(/-/g, ":"));
 }
 
+
+// 2つ目の引数は置換文字列で、特別な文字を利用できる
+{
+    let str = "John Doe, John Smith and John Bull.";
+
+    alert(str.replace(/John/g, "Mr.$&"));
+}
+
+
+// 括弧は次のように$1, $2などと一緒によく使用される
+{
+    let str = "John Smith";
+
+    alert(str.replace(/(John) (Smith)/, "$2, $1"));
+}
+
+
+// "賢い"置換が必要な状況では、2つ目の引数は関数にすることができる
+{
+    let i = 0;
+
+    // 各"ho"を関数の結果に置換する
+    alert("Ho-Ho-ho".replace(/ho/gi, function() {
+        return ++i;
+    }))
+}
+
+
+// 正規表現に括弧がない場合、関数は常に3つの引数
+{
+    // すべてのマッチを表示し置き換える
+    function replacer(str, offset, s) {
+        alert(`Found ${str} at position ${offset} in string ${s}`);
+        return str.toLowerCase();
+    }
+
+    let result = "HO-Ho-ho".replace(/ho/gi, replacer);
+    alert("Result: " + result);
+}
+
+
+// 下の例では2つの括弧がある
+// replacerは5つの引数で呼ばれる
+// strは完全なマッチ、次に括弧、そしれoffsetとs
+{
+    function replacer(str, name, surname, offset, s) {
+        // nameは最初の括弧で、surnameは2つ目です
+        return surname + ", " + name;
+    }
+
+    let str = "John Smith";
+
+    alert(str.replace(/(John) (Smith)/, replacer));
+}
+
+
+// regexp.test(str)
+{
+    let str = "I love JavaScript";
+
+    // これらの2つのテストは同じことをする
+    alert(/love/i.test(str)); // true
+    alert(str.search(/love/i) != -1); // true
+}
+
+// 見つからない場合の例
+{
+    let str = "Bla-bla-bla";
+
+    alert(/love/i.test(str));
+    alert(str.search(/love/i) != -1);
+}
