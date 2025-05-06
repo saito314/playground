@@ -166,3 +166,34 @@
     alert(/love/i.test(str));
     alert(str.search(/love/i) != -1);
 }
+
+
+// regexp.exec(str)
+// regexp.exec()メソッドは少し使いにくいですが、括弧のものや位置と一緒にすべてのマッチを検索することができる
+{
+    let str = "A lot about JavaScript at https://javascript.info";
+
+    let regexp = /JAVA(SCRIPT)/ig;
+
+    // 最初のマッチを探す
+    alert(matchOne[0]);
+    alert(matchOne[1]);
+    alert(matchOne.index);
+    alert(matchOne.input);
+
+    alert(regexp.lastIndex);
+
+    // 2つめのマッチを探す
+    alert(matchTwo[0]);
+    alert(matchTwo[1]);
+    alert(matchTwo.index);
+    alert(matchTwo.input);
+
+    alert(regexp.lastIndex);
+
+    // 3つ目のマッチを探す
+    let matchThree = regexp.exec(str);
+    alert(matchThree);
+
+    alert(regexp.lastIndex);
+}
