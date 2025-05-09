@@ -197,3 +197,34 @@
 
     alert(regexp.lastIndex);
 }
+
+
+// 各regexp.exec呼び出しは完全なフォーマットでマッチを返す
+// regexp.execの主なユースケースはループ内ですべてのマッチを見つけること
+{
+    let str = "A lot about JavaScript at https://javascript.info";
+
+    let regexp = /javascript/ig;
+
+    let result;
+
+    while (result = rexexp.exec(str)) {
+        alert(`Found ${result[0]} at ${result.index}`);
+    }
+}
+
+
+// "y"フラグ
+// yフラグは、regexp.lastIndexプロパティで指定された位置で正確に一致するものが見つかるようにする
+// つまり、通常は文字列全体で検索が行われる。/javascript/は文字列のすべての場所で"javascript"を探す
+{
+    let str = "I love JavaScript";
+
+    let reg = /javascript/iy;
+
+    alert(reg.lastIndex);
+    alert(str.match(reg));
+
+    reg.lastIndex = 7;
+    alert(str.match(reg));
+}
