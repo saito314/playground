@@ -21,6 +21,7 @@ class EmotionAnalyzer:
         self.scaler = StandardScaler()
         
         # 簡易的な感情分析のための特徴量閾値（実際には機械学習モデルを使用するべき）
+        # ここでは、各感情に対する特徴量の閾値を定義します
         self.thresholds = {
             # 喜び: 高いエネルギー、高いテンポ、高い周波数成分
             '喜び': {
